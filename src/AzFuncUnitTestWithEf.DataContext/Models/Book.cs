@@ -20,7 +20,5 @@ namespace AzFuncUnitTestWithEf.DataContext.Models
         public string Author { get; set; }
 
         public DateTime PublishedDate { get; set; }
-
-
     }
 }
