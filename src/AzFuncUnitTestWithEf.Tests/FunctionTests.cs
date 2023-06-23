@@ -19,27 +19,33 @@ namespace AzFuncUnitTestWithEf.Tests
         private static InMemoryDatabaseRoot _root = new InMemoryDatabaseRoot();
         private BookDataContext _bookContext;
 
-        [SetUp]
-        public void Setup()
+        [OneTimeSetUp]
+        public void OneTimeSetup()
         {
             var dbBuilder = new DbContextOptionsBuilder<BookDataContext>();
             dbBuilder.UseInMemoryDatabase(databaseName: "Book", _root);
             _bookContext = new BookDataContext(dbBuilder.Options);
         }
 
+        [SetUp]
+        public void Setup()
+        {
+			// Make sure database is empty when starting
+			_bookContext.Database.EnsureDeleted();
+		}
+
         [Test]
         public async Task ReturnsSuccess()
         {
             // Arrange
-            // Make sure database is empty when starting
-            _bookContext.Database.EnsureDeleted();
-            // Arrange function dependencies
+            // Arrange Function dependencies
             var loggerFactory = new LoggerFactory();
             var logger = loggerFactory.CreateLogger("DebugLogger");
             var executionContext = new Microsoft.Azure.WebJobs.ExecutionContext();
             var id = Guid.NewGuid();
             executionContext.InvocationId = id;
-            // Arrange request data
+
+            // Arrange Request data
             string input = "{\"Title\": \"Test Title\", \"Author\": \"Test Author\", \"PublishedDate\": \"2022-04-08T14:47:46Z\"}";
             using (var requestStream = new MemoryStream())
             {
