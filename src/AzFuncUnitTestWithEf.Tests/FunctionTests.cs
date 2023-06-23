@@ -32,6 +32,7 @@ namespace AzFuncUnitTestWithEf.Tests
         {
 			// Make sure database is empty when starting
 			_bookContext.Database.EnsureDeleted();
+            _bookContext.Database.EnsureCreated();
 		}
 
         [Test]
